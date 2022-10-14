@@ -1,7 +1,9 @@
 package hu.petrik.kopapirollo;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     Button ko;
     Button papir;
     Button ollo;
+    AlertDialog.Builder alert;
 
     //0 - KŐ, 1 - PAPÍR, 2 - OLLÓ
     private int player = 0;
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         ko = (Button) findViewById(R.id.ko);
         papir = (Button) findViewById(R.id.papir);
         ollo = (Button) findViewById(R.id.ollo);
+        alert = new AlertDialog.Builder(this);
 
         ko.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 bot = (int)(Math.random() * 3);
                 kepBeallitas();
                 ellenorzes();
+                wincheck();
             }
         });
 
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 bot = (int)(Math.random() * 3);
                 kepBeallitas();
                 ellenorzes();
+                wincheck();
             }
         });
 
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 bot = (int)(Math.random() * 3);
                 kepBeallitas();
                 ellenorzes();
+                wincheck();
             }
         });
     }
@@ -107,5 +114,50 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Döntetlen", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void wincheck(){
+        if (playerWinCount == 3){
+            alert.setTitle("Győzelem").
+                    setMessage("Szeretne új játékot játszani?").
+                    setNegativeButton("Nem", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                            System.exit(0);
+                        }
+                    }).
+                    setPositiveButton("Igen", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ujJatek();
+                        }
+                    });
+            alert.show();
+        }
+        if (botWinCount == 3){
+            alert.setTitle("Vereség").
+                    setMessage("Szeretne új játékot játszani?").
+                    setNegativeButton("Nem", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                    System.exit(0);
+                }
+            }).
+                    setPositiveButton("Igen", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ujJatek();
+                }
+            });
+            alert.show();
+        }
+        }
+    private void ujJatek(){
+        playerWinCount = 0;
+        botWinCount = 0;
+        playerWin.setText(String.valueOf(playerWinCount));
+        botWin.setText(String.valueOf(botWinCount));
     }
 }
